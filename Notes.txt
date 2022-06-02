@@ -1,0 +1,138 @@
+in the terminal
+
+dotnet new web -h   				       // to get help on the 
+
+dotnet new --list				               // to list all the template to create project
+
+dotnet new web -n Name of Project -f net5.0 --force	// to create an empty .netcore project with net5.0 framework
+
+code -r Name of Project				        // to open the project with visual studio
+
+// add a package
+dotnet add package HotChocolate.AspNetCore --version 13.0.0-preview.19
+dotnet add package HotChocolate.Data.EntityFramework --version 13.0.0-preview.19
+dotnet add package Microsoft.EntityFrameworkCore.Design --version 7.0.0-preview.4.22229.2
+
+
+dotnet build 				// to run the application
+
+
+dotnet ef				//to check if entityframework tools is installed on the computer
+
+dotnet tool install --global dotnet-ef			// to install dotnet ef tools
+
+dotnet tool update --global dotnet-ef			// to update teh dotnet ef tool
+
+dotnet ef migrations add AddPlatformTable		// to create a migration
+
+dotnet ef database update				// to update the database with the migration
+
+
+
+
+
+
+
+
+// to access the graphql api Banana Cake Pop
+http://localhost:5000/graphql/
+
+
+// to access the graphql voyager to see the schema definitions
+http://localhost:5000/graphql-voyager
+
+
+
+// calling the graphQL API via client
+
+// To Query to get platforms and command
+         query{
+	    platform
+	    {
+		id
+		name
+		commands{
+			id
+			howTo
+			commandLine
+		}
+	     }
+         }
+
+
+
+// Query with filter using the where clause
+           query{
+	      command (where: {platformId:{eq:1}}){
+		id
+		howTo
+		commandLine
+		platform{
+			id
+			name
+		}
+	      }
+           }
+
+// Query using sorting
+	     query{
+	      platform (order: {name:DESC}){
+		id
+		name
+		commands{
+			id
+			commandLine	
+		}
+	      }
+	     }
+
+
+// To Add a new Platform
+     mutation{
+	addPlatform(input: {
+		name: "Mac OS"
+	}){
+		platform{
+			id
+			name
+		}
+	}
+      }
+
+// to add a new command
+      mutation{
+	  addCommand(input: {
+		howTo:"how to check the version of jekins"
+		commandLine:"jekins -version"
+		platformId:4
+	  })
+	  {
+		command{
+			id
+			howTo
+			commandLine
+			platform
+			{
+				id
+				name
+			}
+		}
+	  }
+        }
+
+
+
+// Use mutation to add and delete
+
+
+
+
+// to subscribe to an Event // the event method name and implementation is onPlatformAdded 
+// get alert by websockets when the Add platform mutation is triggered successful
+subscription
+{
+  onPlatformAdded {
+    id
+    name    
+  }
+}

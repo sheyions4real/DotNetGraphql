@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CommanderGQL.Data;
+using CommanderGQL.GraphQL;
 using CommanderGQL.GraphQL.Commands;
 using CommanderGQL.GraphQL.Platforms;
 using CommanderGQL.Queries;
@@ -44,11 +45,17 @@ namespace CommanderGQL
             // Adding the graphql server
             services
                 .AddGraphQLServer()
+                .AddMutationType<Mutation>()
+                .AddSubscriptionType<Subscription>()
+                .AddQueryType<Query>() 
                 .AddType<CommandType>() 
                 .AddType<PlatformType>()
-                 .AddQueryType<Query>()   // adding some specific query configuratoin for the GraphQL Query 
-                .AddProjections();          // this will allow the get platorm to return platfroms and the commands children object [Inner join]
-                                                // We will not use AddProjections because we are using the Type Approach
+                // adding some specific query configuratoin for the GraphQL Query 
+                .AddProjections()               // this will allow the get platorm to return platfroms and the commands children object [Inner join] // We will not use AddProjections because we are using the Type Approach
+                .AddFiltering()
+                .AddSorting()
+                .AddInMemorySubscriptions();      // you can use db rather than inmemory in production     
+                                                
 
 
 
@@ -63,6 +70,12 @@ namespace CommanderGQL
             {
                 app.UseDeveloperExceptionPage();
             }
+
+
+            // add websockets middleware
+            app.UseWebSockets();
+
+
 
             app.UseRouting();
 
